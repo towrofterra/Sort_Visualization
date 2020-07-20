@@ -14,7 +14,7 @@ void setup() {
   colorMode(HSB);
   textSize(32);
   fill(0);
-  int size = 1000;
+  int size = 100;
   for (float i = 0; i <= 1.00001; i+= (1.0/size))
     items.add(new Float(i));
 
@@ -149,20 +149,24 @@ boolean selectionPass(ArrayList<Float> items, int start) {
 // int start is the index of the first unsorted element
 // Returns true if the sort is done
 boolean insertionPass(ArrayList<Float> items, int start) {
-  if (start >= items.size() - 1)
+  if (start >= items.size()) // if the list is sorted, we're done
     return true;
-  int newIndex;
-  for (newIndex = 0; newIndex < start; newIndex++)
-    if (items.get(newIndex) <= items.get(start) && items.get(newIndex+1) >= items.get(start)){
-      print("First unsorted item is:" + str(items.get(start)));
-      println(", getting placed at position:" + str(newIndex));
-
-      break;
+  else if(items.get(start) <= items.get(0)){ // If the new item is the smallest we've encountered, just stick it on the front 
+    items.add(0, items.remove(start));
+    return false;
+  }
+  else if(items.get(start-1) <= items.get(start)) // If the new item is bigger than the largest sorted item, just leave it where it is and move on
+    return false;
+    
+  else {
+    for(int i=0; i<start;i++){
+      if(items.get(start) >= items.get(i) && items.get(start) <= items.get(i+1)){
+         items.add(i+1, items.remove(start));
+      }
     }
-  
-  // Insert the element into the correct place in the sorted section
-  items.add(newIndex, items.remove(start));
+  }
   return false;
+
 }
 
 
@@ -208,6 +212,7 @@ void drawColor(ArrayList<Float> items) {
 
 // EFFECT: Slices the given image up and assigns each column of pixels to a value on the list
 void drawPicture(ArrayList<Float> items, PImage img) {
+  //todo
 }
 
 // EFFECT: Stop all sound, stop the draw() loop and set the sort type to pause
