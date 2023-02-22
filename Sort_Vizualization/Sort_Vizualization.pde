@@ -14,7 +14,7 @@ void setup() {
   colorMode(HSB);
   textSize(32);
   fill(0);
-  int size = 100;
+  int size = 1000;
   for (float i = 0; i <= 1.00001; i+= (1.0/size))
     items.add(new Float(i));
 
@@ -44,6 +44,8 @@ void draw() {
   if (drawTypes.get(drawType).equals("Color"))
     drawColor(items);
 
+  // Plays the sound at a frequency based on the element halfway through the unsorted part of the list
+  sound.play(items.get((sortDex + (items.size() - sortDex) / 2) - 2) * 600, 1);
 
   if (sortTypes.get(sortType).equals("Pause")) {
     sound.stop();
@@ -51,15 +53,12 @@ void draw() {
 
 
   if (sortTypes.get(sortType).equals("Bubble")) {
-    sound.play(items.get(sortDex + (items.size() - sortDex) / 2) * 600, 1);
     // If the sort is complete, the bubblePass function will return true
     if (bubblePass(items))
       stopSort();
   }
 
   if (sortTypes.get(sortType).equals("Selection")) {
-    // Plays the sound at a frequency based on the element halfway through the unsorted part of the list
-    sound.play(items.get((sortDex + (items.size() - sortDex) / 2) - 2) * 600, 1);
     // If the sort is complete, the selectionPass function will return true
     if (selectionPass(items, sortDex++)) {
       stopSort();
@@ -67,14 +66,11 @@ void draw() {
   }
 
   if (sortTypes.get(sortType).equals("Insertion")) {
-    // Plays the sound at a frequency based on the element halfway through the unsorted part of the list
-    sound.play(items.get((sortDex + (items.size() - sortDex) / 2) - 2) * 600, 1);
     // If the sort is complete, the selectionPass function will return true
     if (insertionPass(items, sortDex++)) {
       stopSort();
     }
   }
-
 
   text(sortTypes.get(sortType), 25 - width / 2, 50 - height / 2);
 }
@@ -170,7 +166,6 @@ boolean insertionPass(ArrayList<Float> items, int start) {
 }
 
 
-
 // EFFECT: Draws the given list as a bar graph
 void drawLine(ArrayList<Float> items) {
   float xDist = 0;
@@ -181,6 +176,7 @@ void drawLine(ArrayList<Float> items) {
     xDist += float(width) / items.size();
   }
 }
+
 
 // EFFECT: Draws the given list as a pie chart (lines of different lengths radiating out from a central point
 void drawShell(ArrayList<Float> items) {
@@ -210,10 +206,12 @@ void drawColor(ArrayList<Float> items) {
   }
 }
 
+
 // EFFECT: Slices the given image up and assigns each column of pixels to a value on the list
 void drawPicture(ArrayList<Float> items, PImage img) {
   //todo
 }
+
 
 // EFFECT: Stop all sound, stop the draw() loop and set the sort type to pause
 void stopSort() {
